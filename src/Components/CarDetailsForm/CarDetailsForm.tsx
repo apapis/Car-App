@@ -4,7 +4,7 @@ import { Form, FieldsContainer } from "./CarDetailsForm.style";
 import agent from "../../api/agent";
 import AddAttribute from "../AddAttribute/AddAttribute";
 import Field from "../Field/Field";
-import { Car } from "../../Models/Car";
+
 interface CarDetails {
   details: { [key: string]: string };
   description: string;
@@ -29,6 +29,9 @@ const CarDetailsForm: React.FC<CarDetailsFormProps> = ({ carDetails }) => {
   });
 
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [formFields, setFormFields] = useState<string[]>(
+    Object.keys(carDetails.details)
+  );
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -48,13 +51,18 @@ const CarDetailsForm: React.FC<CarDetailsFormProps> = ({ carDetails }) => {
   const handleAddAttribute = (key: string, value: string) => {
     if (key && value && !watchedValues[key]) {
       setValue(key, value, { shouldValidate: true });
+      setFormFields([...formFields, key]);
     }
+  };
+
+  const handleRemoveAttribute = (key: string) => {
+    setValue(key, undefined);
+    setFormFields(formFields.filter((field) => field !== key));
   };
 
   const onSubmit = (data: FormData) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { newAttributeKey: _, newAttributeValue: __, ...details } = data;
-
     const formData = new FormData();
     formData.append("url", carDetails.url);
     formData.append("description", data.description);
@@ -74,18 +82,15 @@ const CarDetailsForm: React.FC<CarDetailsFormProps> = ({ carDetails }) => {
     <Form onSubmit={handleSubmit(onSubmit)}>
       <h3>Edytuj szczegóły samochodu:</h3>
       <FieldsContainer>
-        {Object.entries(watchedValues).map(([key]) =>
-          key !== "description" &&
-          key !== "newAttributeKey" &&
-          key !== "newAttributeValue" ? (
-            <Field
-              key={key}
-              label={key}
-              type="text"
-              fieldProps={{ ...register(key) }}
-            />
-          ) : null
-        )}
+        {formFields.map((key) => (
+          <Field
+            key={key}
+            label={key}
+            type="text"
+            fieldProps={{ ...register(key) }}
+            onRemove={() => handleRemoveAttribute(key)}
+          />
+        ))}
         <AddAttribute onAdd={handleAddAttribute} />
       </FieldsContainer>
       <Field

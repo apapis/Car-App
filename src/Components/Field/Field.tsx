@@ -5,9 +5,10 @@ interface FieldProps {
   type: string;
   fieldProps: React.InputHTMLAttributes<HTMLInputElement> &
     React.TextareaHTMLAttributes<HTMLTextAreaElement>;
+  onRemove: () => void;
 }
 
-const Field: React.FC<FieldProps> = ({ label, type, fieldProps }) => {
+const Field: React.FC<FieldProps> = ({ label, type, fieldProps, onRemove }) => {
   return (
     <div>
       <Label htmlFor={fieldProps.name}>{label}</Label>
@@ -16,6 +17,9 @@ const Field: React.FC<FieldProps> = ({ label, type, fieldProps }) => {
       ) : (
         <Input id={fieldProps.name} type={type} {...fieldProps} />
       )}
+      <button type="button" onClick={onRemove}>
+        Remove
+      </button>
     </div>
   );
 };
