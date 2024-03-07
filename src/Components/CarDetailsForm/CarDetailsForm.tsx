@@ -1,10 +1,10 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Form, FieldsContainer } from "./CarDetailsForm.style";
 import agent from "../../api/agent";
 import AddAttribute from "../AddAttribute/AddAttribute";
 import Field from "../Field/Field";
-
+import { Car } from "../../Models/Car";
 interface CarDetails {
   details: { [key: string]: string };
   description: string;
@@ -28,6 +28,15 @@ const CarDetailsForm: React.FC<CarDetailsFormProps> = ({ carDetails }) => {
     },
   });
 
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      console.log(event.target.files);
+      setSelectedFiles(Array.from(event.target.files));
+    }
+  };
+
   const watchedValues = watch();
 
   useEffect(() => {
@@ -45,13 +54,20 @@ const CarDetailsForm: React.FC<CarDetailsFormProps> = ({ carDetails }) => {
   const onSubmit = (data: FormData) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { newAttributeKey: _, newAttributeValue: __, ...details } = data;
-    const objectCar = {
-      url: carDetails.url,
-      details,
-      description: data.description,
-    };
 
-    agent.Cars.addCar(objectCar);
+    const formData = new FormData();
+    formData.append("url", carDetails.url);
+    formData.append("description", data.description);
+
+    Object.entries(details).forEach(([key, value]) => {
+      formData.append(`details[${key}]`, value);
+    });
+
+    selectedFiles.forEach((file) => {
+      formData.append("images", file);
+    });
+
+    agent.Cars.addCar(formData as unknown as Car);
   };
 
   return (
@@ -77,6 +93,7 @@ const CarDetailsForm: React.FC<CarDetailsFormProps> = ({ carDetails }) => {
         type="textarea"
         fieldProps={{ ...register("description") }}
       />
+      <input type="file" name="images" multiple onChange={handleFileChange} />
       <button type="submit">Zapisz zmiany</button>
     </Form>
   );
