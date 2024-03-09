@@ -1,5 +1,6 @@
 export interface Car {
   url: string;
+  name: string;
   details: Record<string, string>;
   description: string;
   image: object;

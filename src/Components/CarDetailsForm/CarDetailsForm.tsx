@@ -5,10 +5,12 @@ import agent from "../../api/agent";
 import AddAttribute from "../AddAttribute/AddAttribute";
 import Field from "../Field/Field";
 import { Car } from "../../Models/Car";
+import LoadingOverlay from "../Loading/LoadingOverlay";
 
 interface CarDetails {
   details: { [key: string]: string };
   description: string;
+  name: string;
   url: string;
 }
 
@@ -19,6 +21,7 @@ interface CarDetailsFormProps {
 interface FormData {
   [key: string]: string; // Dla dynamicznych kluczy
   description: string; // Możesz dodać więcej znanych pól, jeśli są
+  name: string;
 }
 
 const CarDetailsForm: React.FC<CarDetailsFormProps> = ({ carDetails }) => {
@@ -26,10 +29,12 @@ const CarDetailsForm: React.FC<CarDetailsFormProps> = ({ carDetails }) => {
     defaultValues: {
       ...carDetails.details,
       description: carDetails.description || "",
+      name: carDetails.name || "",
     },
   });
 
   const [carAdded, setCarAdded] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [formFields, setFormFields] = useState<string[]>(
     Object.keys(carDetails.details)
@@ -66,7 +71,9 @@ const CarDetailsForm: React.FC<CarDetailsFormProps> = ({ carDetails }) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { newAttributeKey: _, newAttributeValue: __, ...details } = data;
     const formData = new FormData();
+
     formData.append("url", carDetails.url);
+    formData.append("name", data.name);
     formData.append("description", data.description);
 
     Object.entries(details).forEach(([key, value]) => {
@@ -77,17 +84,23 @@ const CarDetailsForm: React.FC<CarDetailsFormProps> = ({ carDetails }) => {
       formData.append("images", file);
     });
 
+    setIsLoading(true);
+    console.log(formData);
     agent.Cars.addCar(formData as unknown as Car)
       .then(() => {
         setCarAdded(true);
+        setIsLoading(false);
       })
       .catch((error) => {
         console.error("Error adding car:", error);
+        setIsLoading(false);
       });
   };
 
   return (
     <>
+      {console.log(carDetails)}
+      {isLoading && <LoadingOverlay />}
       {carAdded ? (
         <div>
           <h3>Car added successfully!</h3>
@@ -99,6 +112,11 @@ const CarDetailsForm: React.FC<CarDetailsFormProps> = ({ carDetails }) => {
         <Form onSubmit={handleSubmit(onSubmit)}>
           <h3>Edytuj szczegóły samochodu:</h3>
           <FieldsContainer>
+            <Field
+              label="Nazwa"
+              type="text"
+              fieldProps={{ ...register("name") }}
+            />
             {formFields.map((key) => (
               <Field
                 key={key}
