@@ -4,6 +4,7 @@ import { Form, FieldsContainer } from "./CarDetailsForm.style";
 import agent from "../../api/agent";
 import AddAttribute from "../AddAttribute/AddAttribute";
 import Field from "../Field/Field";
+import { Car } from "../../Models/Car";
 
 interface CarDetails {
   details: { [key: string]: string };
@@ -28,6 +29,7 @@ const CarDetailsForm: React.FC<CarDetailsFormProps> = ({ carDetails }) => {
     },
   });
 
+  const [carAdded, setCarAdded] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [formFields, setFormFields] = useState<string[]>(
     Object.keys(carDetails.details)
@@ -56,7 +58,7 @@ const CarDetailsForm: React.FC<CarDetailsFormProps> = ({ carDetails }) => {
   };
 
   const handleRemoveAttribute = (key: string) => {
-    setValue(key, undefined);
+    setValue(key, "");
     setFormFields(formFields.filter((field) => field !== key));
   };
 
@@ -75,32 +77,54 @@ const CarDetailsForm: React.FC<CarDetailsFormProps> = ({ carDetails }) => {
       formData.append("images", file);
     });
 
-    agent.Cars.addCar(formData as unknown as Car);
+    agent.Cars.addCar(formData as unknown as Car)
+      .then(() => {
+        setCarAdded(true);
+      })
+      .catch((error) => {
+        console.error("Error adding car:", error);
+      });
   };
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit)}>
-      <h3>Edytuj szczegóły samochodu:</h3>
-      <FieldsContainer>
-        {formFields.map((key) => (
+    <>
+      {carAdded ? (
+        <div>
+          <h3>Car added successfully!</h3>
+          <button type="button" onClick={() => window.location.reload()}>
+            Add another car
+          </button>
+        </div>
+      ) : (
+        <Form onSubmit={handleSubmit(onSubmit)}>
+          <h3>Edytuj szczegóły samochodu:</h3>
+          <FieldsContainer>
+            {formFields.map((key) => (
+              <Field
+                key={key}
+                label={key}
+                type="text"
+                fieldProps={{ ...register(key) }}
+                onRemove={() => handleRemoveAttribute(key)}
+              />
+            ))}
+            <AddAttribute onAdd={handleAddAttribute} />
+          </FieldsContainer>
           <Field
-            key={key}
-            label={key}
-            type="text"
-            fieldProps={{ ...register(key) }}
-            onRemove={() => handleRemoveAttribute(key)}
+            label="Opis"
+            type="textarea"
+            fieldProps={{ ...register("description") }}
           />
-        ))}
-        <AddAttribute onAdd={handleAddAttribute} />
-      </FieldsContainer>
-      <Field
-        label="Opis"
-        type="textarea"
-        fieldProps={{ ...register("description") }}
-      />
-      <input type="file" name="images" multiple onChange={handleFileChange} />
-      <button type="submit">Zapisz zmiany</button>
-    </Form>
+          <input
+            type="file"
+            name="images"
+            multiple
+            onChange={handleFileChange}
+          />
+          <button type="submit">Zapisz zmiany</button>
+        </Form>
+      )}
+    </>
   );
 };
 
