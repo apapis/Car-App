@@ -1,30 +1,28 @@
-# React + TypeScript + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# Car Listing App - In Progress 
 
-Currently, two official plugins are available:
+This project is a car listing application built with React, TypeScript, and Vite. It allows users to easily create and manage car listings for their automotive business.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Key Features:
+- Intuitive interface for adding car listings
+- Integration with an external API (repository link: [provide the link to your API repository])
+- Automatic retrieval of car information from the popular Polish automotive website, Otomoto (https://www.otomoto.pl/)
+- Seamless data population for car listings based on the retrieved information
 
-## Expanding the ESLint configuration
+This application was developed as a custom solution for a client who found the process of adding car listings on their WordPress website too cumbersome and unintuitive. By leveraging the power of React and TypeScript, along with the fast development setup provided by Vite, this app streamlines the car listing process and enhances the user experience.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+The app integrates with a separate API (housed in another repository) to handle data management and communication with the backend. It also includes a special feature that allows users to fetch car details directly from Otomoto, a leading automotive classified website in Poland. By simply providing a link to a car listing on Otomoto, the app automatically extracts relevant information and pre-fills the corresponding fields in the car listing form.
 
-- Configure the top-level `parserOptions` property like this:
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
+## Instalation
+To run this project locally, make sure you have Node.js and npm (Node Package Manager) installed on your machine.
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+1. Clone the repository or download the source code.
+2. Open a terminal and navigate to the project's directory.
+3. Install the dependencies: `npm install`
+4. Start the development server: `npm run dev`
+5. Open your browser and visit: `http://localhost:3000`
+
+Note: Make sure to also set up and run the accompanying API project https://github.com/apapis/Car-App-API to enable full functionality.
+
+If you want to try out the Otomoto integration feature, simply choose a car listing from https://www.otomoto.pl/ and provide its URL in the designated input field within the app.
