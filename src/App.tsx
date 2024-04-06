@@ -7,6 +7,7 @@ import {
   Button,
   Container,
   ButtonContainer,
+  InformationContainer,
 } from "./App.style";
 import CarDetailsForm from "./Components/CarDetailsForm/CarDetailsForm";
 import "./App.css";
@@ -29,6 +30,7 @@ function App() {
   const handleManualAdd = () => {
     const manualCar: Car = {
       url: "",
+      name: "",
       details: {
         "Oferta od": "",
         "Pokaż oferty z numerem VIN": "",
@@ -62,13 +64,19 @@ function App() {
 
   return (
     <Container>
-      <Title>Dodaj samochód</Title>
       {car ? (
         <CarDetailsForm carDetails={car} />
       ) : (
         <>
+          <InformationContainer>
+            "If you want to test the API, choose a listing from this page-
+            <a href="https://www.otomoto.pl/" target="_blank">
+              https://www.otomoto.pl/
+            </a>
+          </InformationContainer>
+          <Title>Dodaj samochód</Title>
           <Form onSubmit={handleSubmit}>
-            <Label htmlFor="inputField">Wpisz URL:</Label>
+            <Label htmlFor="inputField">Add URL:</Label>
             <Input
               type="text"
               id="inputField"

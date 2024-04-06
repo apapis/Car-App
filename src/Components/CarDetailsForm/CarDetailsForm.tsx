@@ -6,6 +6,7 @@ import AddAttribute from "../AddAttribute/AddAttribute";
 import Field from "../Field/Field";
 import { Car } from "../../Models/Car";
 import LoadingOverlay from "../Loading/LoadingOverlay";
+import { Title } from "../../App.style";
 
 interface CarDetails {
   details: { [key: string]: string };
@@ -103,9 +104,9 @@ const CarDetailsForm: React.FC<CarDetailsFormProps> = ({ carDetails }) => {
       {isLoading && <LoadingOverlay />}
       {carAdded ? (
         <div>
-          <h3>Car added successfully!</h3>
+          <Title>Samochód dodany pomyślnie</Title>
           <button type="button" onClick={() => window.location.reload()}>
-            Add another car
+            Dodaj nowy samochód
           </button>
         </div>
       ) : (

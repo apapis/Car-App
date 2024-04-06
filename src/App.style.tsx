@@ -68,3 +68,11 @@ export const ButtonContainer = styled.div`
   max-width: 400px;
   margin-top: 20px;
 `;
+
+export const InformationContainer = styled.div`
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+`;
